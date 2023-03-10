@@ -1,25 +1,25 @@
 node {
     def server = Artifactory.server('devops.jfrog.io')
-    def rtGradle = Artifactory.newGradleBuild()
+    def rtNpm = Artifactory.newNpmBuild()
     def buildInfo = Artifactory.newBuildInfo()
     stage 'Build'
         git url: 'https://github.com/yaniljm/devops.git'
 
     stage 'Artifactory configuration'
-        rtGradle.tool = 'gradle' // Tool name from Jenkins configuration
-        rtGradle.deployer repo:'gradle-dev-local',  server: server
-        rtGradle.resolver repo:'gradle-dev', server: server
+        rtNpm.tool = 'devopsjfrog' // Tool name from Jenkins configuration
+        rtNpm.deployer repo:'npm-dev-local',  server: server
+        rtNpm.resolver repo:'npm-dev', server: server
 
         stage('Config Build Info') {
             buildInfo.env.capture = true
             buildInfo.env.filter.addInclude("*")
         }
 
-        stage('Extra gradle configurations') {
-            rtGradle.usesPlugin = true // Artifactory plugin already defined in build script
+        stage('Extra Npm Configurations') {
+            rtNpm.usesPlugin = true // Artifactory plugin already defined in build script
         }
-        stage('Exec Gradle') {
-            rtGradle.run rootDir: "artifactory/", buildFile: 'build.gradle', tasks: 'clean artifactoryPublish', buildInfo: buildInfo
+        stage('Exec Npm') {
+            rtNpm.run rootDir: "artifactory/", buildFile: 'build.Npm', tasks: 'clean artifactoryPublish', buildInfo: buildInfo
         }
         stage('Publish build info') {
             server.publishBuildInfo buildInfo
