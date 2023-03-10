@@ -1,5 +1,5 @@
 node {
-    def server = Artifactory.server('devops.jfrog.io')
+    def server = Artifactory.server('devopsjfrog')
     def rtNpm = Artifactory.newNpmBuild()
     def buildInfo = Artifactory.newBuildInfo()
     stage 'Build'
